@@ -5,13 +5,15 @@
 //E2: PWM control for Motor2
 int E1 = 5;   //left   
 int M1 = 4;   //left
-int E2 = 6;   //right                         
-int M2 = 7;   //right                
+int E2 = 3;   //right                         
+int M2 = 2;   //right      
+
 void setup() 
 { 
     pinMode(M1, OUTPUT);   
     pinMode(M2, OUTPUT); 
 }
+
 void loop() 
 { 
   int value; 
@@ -26,25 +28,25 @@ void loop()
 }
 
 void turnLeft(){
-    digitalWrite(M1,LOW);   
+    digitalWrite(M1,HIGH);
     digitalWrite(M2, LOW);    
     analogWrite(E1, 177);
-    analogWrite(E2, 77); 
+    analogWrite(E2, 77);
 }
 
 void turnRight(){
-    digitalWrite(M1,LOW);   //motor forward 
-    digitalWrite(M2, HIGH);    //motor backwards
+    digitalWrite(M1,LOW);
+    digitalWrite(M2, HIGH);
     analogWrite(E1, 77);
-    analogWrite(E2, 177); 
+    analogWrite(E2, 177);
     
 }
 
 void stop(){
-    digitalWrite(M1,LOW); //motor forward
-    digitalWrite(M2, LOW); //motors forward
+    digitalWrite(M1,LOW);
+    digitalWrite(M2, LOW);
     analogWrite(E1, 0);
-    analogWrite(E2, 0); 
+    analogWrite(E2, 0);
 }
 
 
