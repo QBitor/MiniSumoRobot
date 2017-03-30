@@ -3,10 +3,10 @@
 //M2: Direction for Motor2
 //E1: PWM control for Motor1
 //E2: PWM control for Motor2
-int E1 = 5;   //left   
-int M1 = 4;   //left
-int E2 = 3;   //right                         
-int M2 = 2;   //right      
+int E1 = 5;   //left motor PWM   
+int M1 = 4;   //left motor 
+int E2 = 3;   //right motor PWM                   
+int M2 = 2;   //right motor
 
 void setup() 
 { 
@@ -14,7 +14,11 @@ void setup()
     pinMode(M2, OUTPUT); 
 }
 
-void loop() 
+void loop(){
+  testMotors();
+}
+
+void testMotors() 
 { 
   int value; 
   for(value = 0 ; value <= 255; value+=5) 
@@ -48,6 +52,8 @@ void stop(){
     analogWrite(E1, 0);
     analogWrite(E2, 0);
 }
+
+
 
 
 

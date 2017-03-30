@@ -1,24 +1,24 @@
 //US defintions
 #include <Ultrasonic.h>
-#define TRIGGER_PIN  12
-#define ECHO_PIN     11
+#define TRIGGER_PIN  6
+#define ECHO_PIN     7
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
 //SERVO definitions
 #include <Servo.h> //include servo libs
-Servo leftServo;  //create servo object to control a servo 
-Servo rightServo; //create servo object to control a servo 
-int leftServo_Pin = 2; //connected to digital out 2
-int rightServo_Pin = 3; //connected to digital out 3
+Servo Servo; //create servo object to control a servo 
+int Servo_Pin = 9; //connected to digital out 2
 
 //LINE defintions 
-int frontLine_Pin = 0; //connected to analog in 0
+int leftFrontLine_Pin = 0; //connected to analog in 0
+int rightFrontLine_Pin = 1; //connected to analog in 0
+
 int frontLine_Led = 13;
 int frontLine_Value;
 
 //GLOBAL definitions
 //arena official diameter micro category: 38.5 cm
-float trigDist = 20.0f;
+float trigDist = 38.5f;
 boolean trigToken;
 float t1, t2, t3;
 float maxTime;
