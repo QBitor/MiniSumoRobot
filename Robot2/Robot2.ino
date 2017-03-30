@@ -26,10 +26,27 @@ void loop()
 }
 
 void turnLeft(){
-    digitalWrite(M1,LOW);   //both motor forward 
-    digitalWrite(M2, LOW);    //both motors forward
-    analogWrite(E1, value);
-    analogWrite(E2, value); 
+    digitalWrite(M1,LOW);   
+    digitalWrite(M2, LOW);    
+    analogWrite(E1, 177);
+    analogWrite(E2, 77); 
 }
+
+void turnRight(){
+    digitalWrite(M1,LOW);   //motor forward 
+    digitalWrite(M2, HIGH);    //motor backwards
+    analogWrite(E1, 77);
+    analogWrite(E2, 177); 
+    
+}
+
+void stop(){
+    digitalWrite(M1,LOW); //motor forward
+    digitalWrite(M2, LOW); //motors forward
+    analogWrite(E1, 0);
+    analogWrite(E2, 0); 
+}
+
+
 
 
