@@ -1,32 +1,21 @@
+//POWER SWITCH definitions
+int powerSwitch_Pin = 12;
+
 //US defintions
 #include <Ultrasonic.h>
-#define TRIGGER_PIN  6
-#define ECHO_PIN     7
+#define TRIGGER_PIN  13
+#define ECHO_PIN     12
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
 //MOTOR definitions
-int E1 = 11;   //left motor PWM   
+int E1 = 5;   //left motor PWM   
 int M1 = 6;   //left motor 
 int E2 = 9;   //right motor PWM                   
-int M2 = 4;   //right motor
-
-//SERVO definitions
-#include <Servo.h> //include servo libs
-Servo Servo; //create servo object to control a servo 
-int Servo_Pin = 9; //connected to digital out
-
-//FRONT PUSH definitions
-int frontPush_Pin = 10;
-
-//POWER PUSH definitions
-int powerPush_Pin = 8;
+int M2 = 8;   //right motor
 
 //LINE defintions 
-int leftFrontLine_Pin = 0; //connected to analog in 0
-int rightFrontLine_Pin = 1; //connected to analog in 0
-
+int rightFrontLine_Pin = 5; //connected to analog in 
 int frontLine_Led = 13;
-int leftFrontLine_Value;
 int rightFrontLine_Value;
 int frontLine_Value;
 
@@ -40,48 +29,54 @@ boolean noBreak;
 
 void setup(){
 	Serial.begin(9600);
-
 	//startup delay
 	Serial.println("Welcome to Neothug");
-	Serial.println("Starting in 5 seconds...");
-	delay(5000);
-	  
 	pinMode(M1, OUTPUT);   
 	pinMode(M2, OUTPUT); 
-	AttachServo();
+	bool text = false;
+
+	Serial.println("Starting in 5 seconds...");
+	delay(3380);
 }
+
+
 
 void SensorsReport(){
 	US();
-	Serial.print("Left frontLine Sensor: ");
-	Serial.println(analogRead(leftFrontLine_Pin));
-	Serial.print("Right frontLine Sensor: ");
+	delay(500);
+	
+	Serial.print("FrontLine sensor value: ");
 	Serial.println(analogRead(rightFrontLine_Pin));
-	Serial.print("FrontPush state: ");
-	FrontPush();
-	Serial.print("PowerPush state: ");
-	PowerPush();  
-}
-
-void loop(){
-	TestMotors();
+	
+	delay(500);
+	
+	if(FrontLine()){
+		Serial.println("Frontline is detected!");
+	}
+	else{
+		Serial.println("No frontline is detected");
+	}
+	delay(500);
+  
+	
+	delay(500);
 }
 
 void TestMotors(){ 
-int value; 
+	int value; 
 	for(value = 0 ; value <= 255; value+=5){ 
 		digitalWrite(M1,LOW);   
 		digitalWrite(M2, LOW);       
-		analogWrite(E1, value);   //PWM Speed control -> other PIN
+		analogWrite(E1, value);   //PWM Speed control 
 		analogWrite(E2, value);   //PWM Speed control 
 		delay(30); 
 	}  
 }
 
-void real_loop(){  
-	//FrontLine true when white, false when black in real conditions
-	SensorsReport();
 
+
+void loop(){  
+	//FrontLine true when white, false when black in real conditions
 	//main code
 
 	//get current values
@@ -119,7 +114,6 @@ void real_loop(){
 	}
 }
 
-
 float US(){
 	//US
 	float cmMsec, inMsec;
@@ -133,106 +127,75 @@ float US(){
 	return cmMsec;
 }
 
-boolean PowerPush(){
-	if (digitalRead(powerPush_Pin) == LOW) {
-		Serial.print("Button is LOW");
-		return false;
-	}
-	else{
-		Serial.print("Button is HIGH");
-		return true;
-	}
-}
-	
-boolean FrontPush(){
-	if (digitalRead(frontPush_Pin) == LOW) {
-		Serial.print("Button is LOW");
-		return false;
-	}
-	else{
-		Serial.print("Button is HIGH");
-		return true;
-	}	
-}  
-  
 boolean FrontLine(){
 	//frontLine get data
-	leftFrontLine_Value = analogRead(leftFrontLine_Pin);
 	rightFrontLine_Value = analogRead(rightFrontLine_Pin);
-	 
-	if(leftFrontLine_Value < 52 || rightFrontLine_Value < 52){
-			return true;
-		}
-		else{
-			return false;
-		}
-}
-
-void AttachServo(){
-	Servo.attach(Servo_Pin);  //attaches the servo on pin to the servo object  
+	  
+	if(rightFrontLine_Value < 500){
+    //testing:
+    //return false;
+		//actual conditions:
+		return true;
+	}
+	else{
+		return false;
+	}
 }
 
 void Stop(){
-    digitalWrite(M1,LOW);
-    digitalWrite(M2, LOW);
-    analogWrite(E1, 0);
-    analogWrite(E2, 0);
+	digitalWrite(M1,LOW);
+	digitalWrite(M2, LOW);
+	analogWrite(E1, 0);
+	analogWrite(E2, 0);
 }
 
 void Backward(){
-    digitalWrite(M1,HIGH);
-    digitalWrite(M2, HIGH);
-    analogWrite(E1, 230);
-    analogWrite(E2, 230);
+	digitalWrite(M1,HIGH);
+	digitalWrite(M2, HIGH);
+	analogWrite(E1, 250);
+	analogWrite(E2, 250);
 }
 
 void Forward(){
-    digitalWrite(M1,LOW);
-    digitalWrite(M2, LOW);
-    analogWrite(E1, 250);
-    analogWrite(E2, 250);
+	digitalWrite(M1,LOW);
+	digitalWrite(M2, LOW);
+	analogWrite(E1, 250);
+	analogWrite(E2, 250);
 }
 
 void RotateCW(){
-    digitalWrite(M1,LOW);
-    digitalWrite(M2, HIGH);
-    analogWrite(E1, 77);
-    analogWrite(E2, 177);
+	digitalWrite(M1,LOW);
+	digitalWrite(M2, HIGH);
+	analogWrite(E1, 255);
+	analogWrite(E2, 255);
 }
 
 void RotateCCW(){
-    digitalWrite(M1,HIGH);
-    digitalWrite(M2, LOW);    
-    analogWrite(E1, 177);
-    analogWrite(E2, 77);
-}
-
-void RotateCWSlow(){
-
-}
-
-void RotateCCWSlow(){
-
+	digitalWrite(M1,HIGH);
+	digitalWrite(M2, LOW);    
+	analogWrite(E1, 255);
+	analogWrite(E2, 255);
 }
 
 void RotateCWavg(){
 	digitalWrite(M1,LOW);
-    digitalWrite(M2, HIGH);
-    analogWrite(E1, 77);
-    analogWrite(E2, 177);
+	digitalWrite(M2, HIGH);
+	analogWrite(E1, 255);
+	analogWrite(E2, 255);
 }
 
 void AvoidBorder(){
 	Stop();
-	delay(75);
+  Backward();
+	delay(250);
 	RotateCWavg();
-	delay(275);
-	Stop();
-	delay(75);
+	delay(1250);
+	//Stop();
+	//delay(25);
 	Forward();
-	delay(350);
-	Stop();
-	delay(75);
+	//delay(450);
+	//Stop();
+	//delay(25);
 }
 
 //not used 
@@ -245,7 +208,7 @@ void EvasiveManeuver(){
 	Stop();
 	delay(75);
 	noBreak = false;
-}	
+}
 
 
 

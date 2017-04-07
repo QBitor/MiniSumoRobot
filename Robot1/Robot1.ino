@@ -33,8 +33,13 @@ void setup(){
 	Serial.println("Welcome to Neothug");
 	pinMode(M1, OUTPUT);   
 	pinMode(M2, OUTPUT); 
+	bool text = false;
 	while(!PowerPush()){
-		Serial.println("Waiting for start switch!");
+		if(text == false){
+			Serial.println("Waiting for start switch!");
+			text = true;
+		}
+		//SensorsReport();
 	}
 	Serial.println("Starting in 5 seconds...");
 	delay(5000);
@@ -42,24 +47,37 @@ void setup(){
 
 boolean PowerPush(){
 	if (digitalRead(powerSwitch_Pin) == LOW) {
-		Serial.print("Button is LOW");
+		//Serial.println("Button is LOW");
 		return true; //robot run
 	}
 	else{
-		Serial.print("Button is HIGH");
+		//Serial.println("Button is HIGH");
 		return false;
 	}
 }
 
 void SensorsReport(){
 	US();
-	delay(1000);
-	Serial.print("Right frontLine Sensor: ");
+	delay(500);
+	
+	Serial.print("FrontLine sensor value: ");
 	Serial.println(analogRead(rightFrontLine_Pin));
-	delay(1000);
+	
+	delay(500);
+	
+	if(FrontLine()){
+		Serial.println("Frontline is detected!");
+	}
+	else{
+		Serial.println("No frontline is detected");
+	}
+	delay(500);
+  
 	Serial.print("PowerPush state: ");
-	delay(1000);
-	PowerPush();
+	if(!PowerPush()){
+		Serial.println("Button is OFF");
+	}
+	delay(500);
 }
 
 void TestMotors(){ 
@@ -73,55 +91,43 @@ void TestMotors(){
 	}  
 }
 
-void testloop(){
-	//SensorsReport();
-	//TestMotors(); 
-}
 
-void loop(){
-	while(PowerPush()){
-		DoSumo();
-	}
-	Stop();
-}
-
-void DoSumo(){  
+void loop(){  
 	//FrontLine true when white, false when black in real conditions
-
 	//main code
 
 	//get current values
 	if(!trigToken){
 		t1 = US();
-		delay(2);
+		delay(5);
 		t2 = US();
-		delay(2);
+		delay(5);
 		t3 = US();
-		delay(2);
+		delay(5);
 	}
-	  
+
 	if(!FrontLine()){
 		if ((t1 < trigDist && t2 < trigDist && t3 < trigDist) || trigToken){ 
 			trigToken = false; 
-			maxTime = millis() + 1500.0f;
+			maxTime = millis() + 3500.0f;
 			while(!FrontLine() && millis() < maxTime){
-			Forward();
+				Forward();
+			}
+		}
+		else{
+			while(!FrontLine() && US() > trigDist){
+				RotateCW();
+			}
+			Stop();
+			if (US() < trigDist){
+				trigToken = true;
 			}
 		}
 	}
-	else{
-		while(!FrontLine() && US() > trigDist){
-			RotateCW();
-		}
-		Stop();
-		if (US() < trigDist){
-			trigToken = true;
-		}
-	}
-  
+
 	if(FrontLine()){
-		Stop();
-		AvoidBorder();
+	Stop();
+	AvoidBorder();
 	}
 }
 
@@ -142,12 +148,14 @@ boolean FrontLine(){
 	//frontLine get data
 	rightFrontLine_Value = analogRead(rightFrontLine_Pin);
 	  
-	if(rightFrontLine_Value < 52){
-		//return false;
+	if(rightFrontLine_Value < 500){
+    //testing:
+    //return false;
+		//actual conditions:
 		return true;
 	}
 	else{
-		return true;
+		return false;
 	}
 }
 
@@ -184,14 +192,6 @@ void RotateCCW(){
 	digitalWrite(M2, LOW);    
 	analogWrite(E1, 255);
 	analogWrite(E2, 255);
-}
-
-void RotateCWSlow(){
-
-}
-
-void RotateCCWSlow(){
-
 }
 
 void RotateCWavg(){
