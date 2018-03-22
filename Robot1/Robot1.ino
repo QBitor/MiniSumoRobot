@@ -1,26 +1,26 @@
-//POWER SWITCH definitions
+// Power switch definitions
 int powerSwitch_Pin = 12;
 
-//US defintions
+// US defintions
 #include <Ultrasonic.h>
 #define TRIGGER_PIN  9
 #define ECHO_PIN     11
 Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
-//MOTOR definitions
+// Motor definitions
 int E1 = 5;   //left motor PWM   
 int M1 = 4;   //left motor 
 int E2 = 3;   //right motor PWM                   
 int M2 = 2;   //right motor
 
-//LINE defintions 
+// Line defintions 
 int rightFrontLine_Pin = 4; //connected to analog in 0
 int frontLine_Led = 13;
 int rightFrontLine_Value;
 int frontLine_Value;
 
-//GLOBAL definitions
-//arena official diameter mini category: 77 cm
+// Global definitions
+// Arena official diameter mini category: 77 cm
 float trigDist = 38.5f;
 boolean trigToken;
 float t1, t2, t3;
@@ -29,7 +29,7 @@ boolean noBreak;
 
 void setup(){
 	Serial.begin(9600);
-	//startup delay
+	// Startup delay
 	Serial.println("Welcome to Neothug");
 	pinMode(M1, OUTPUT);   
 	pinMode(M2, OUTPUT); 
@@ -48,7 +48,7 @@ void setup(){
 boolean PowerPush(){
 	if (digitalRead(powerSwitch_Pin) == LOW) {
 		//Serial.println("Button is LOW");
-		return true; //robot run
+		return true; // Robot run
 	}
 	else{
 		//Serial.println("Button is HIGH");
@@ -93,8 +93,8 @@ void TestMotors(){
 
 
 void loop(){  
-	//FrontLine true when white, false when black in real conditions
-	//main code
+	// FrontLine true when white, false when black in real conditions
+	// Main code
 
 	//get current values
 	if(!trigToken){
@@ -132,7 +132,7 @@ void loop(){
 }
 
 float US(){
-	//US
+	// US
 	float cmMsec, inMsec;
 	long microsec = ultrasonic.timing();
 
@@ -145,13 +145,13 @@ float US(){
 }
 
 boolean FrontLine(){
-	//frontLine get data
+	// frontLine get data
 	rightFrontLine_Value = analogRead(rightFrontLine_Pin);
 	  
 	if(rightFrontLine_Value < 500){
-    //testing:
+    // Testing:
     //return false;
-		//actual conditions:
+		// Actual conditions:
 		return true;
 	}
 	else{
@@ -214,9 +214,9 @@ void AvoidBorder(){
 	//delay(25);
 }
 
-//not used 
+// Not used 
 void EvasiveManeuver(){
-	//when facing enemy for too long
+	// When facing enemy for too long
 	Stop();
 	delay(75);
 	RotateCW();
@@ -225,7 +225,3 @@ void EvasiveManeuver(){
 	delay(75);
 	noBreak = false;
 }
-
-
-
-
